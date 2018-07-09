@@ -3,35 +3,34 @@ NUM_HYPHENS = 3
 BOARD_SIZE = 3
 
 
-
 def checkRows(board):
-    for i in range(0, 2):
+    for i in range(0, BOARD_SIZE-1):
         currCount = 1
         currChar = board[i][0]
-        for j in range(0, 2):
+        for j in range(0, BOARD_SIZE-1):
             prevChar = currChar
-            currChar = board[j][i+1]
+            currChar = board[i][j+1]
             if currChar == prevChar:
                 currCount += 1
             else:
                 currCount = 0
-            if currCount == 3:
+            if currCount == BOARD_SIZE:
                 return currChar
     return 0
 
 
 def checkCols(board):
-    for i in range(0, 2):
+    for i in range(0, BOARD_SIZE-1):
         currCount = 1
         currChar = board[0][i]
-        for j in range(0, 2):
+        for j in range(0, BOARD_SIZE-1):
             prevChar = currChar
             currChar = board[j+1][i]
             if currChar == prevChar:
                 currCount += 1
             else:
                 currCount = 0
-            if currCount == 3:
+            if currCount == BOARD_SIZE:
                 return currChar
     return 0
 
@@ -39,29 +38,29 @@ def checkCols(board):
 def checkMainDiag(board):
     currCount = 1
     currChar = board[0][0]
-    for i in range(0, 2):
+    for i in range(0, BOARD_SIZE-1):
         prevChar = currChar
         currChar = board[i+1][i+1]
         if currChar == prevChar:
             currCount += 1
         else:
             currCount = 0
-        if currCount == 3:
+        if currCount == BOARD_SIZE:
             return currChar
     return 0
 
 
 def checkSecondDiag(board):
     currCount = 1
-    currChar = board[0][2]
-    for i in range(0, 2):
+    currChar = board[0][BOARD_SIZE-1]
+    for i in range(0, BOARD_SIZE-1):
         prevChar = currChar
-        currChar = board[i + 1][1 - i]
+        currChar = board[i+1][BOARD_SIZE-(i+2)]
         if currChar == prevChar:
             currCount += 1
         else:
             currCount = 0
-        if currCount == 3:
+        if currCount == BOARD_SIZE:
             return currChar
     return 0
 
@@ -93,16 +92,24 @@ def updateBoard(game):
 
 
 def makeAMove(player, game):
-    taken = True
-    while taken:
-        move = input("Player " + str(player) + " please make a move:")
-        x = int(move.split(",")[0])
-        y = int(move.split(",")[1])
-        if game[x][y] == 0:
-            game[x][y] = 'X' if player == 1 else 'O'
-            taken = False
+    invalid = True
+    while invalid:
+        move = input("Player " + str(player) + " please make a move: ")
+        move_values = move.split(",")
+        if len(move_values) != 2:
+            print("Invalid format! "
+                  "Please select an index in the format (comma separated): row,column")
         else:
-            print("place taken! Please choose another")
+            x = int(move_values[0])
+            y = int(move_values[1])
+            if x in range(0, BOARD_SIZE) and y in range(0, BOARD_SIZE):
+                if game[x][y] == 0:
+                    game[x][y] = 'X' if player == 1 else 'O'
+                    invalid = False
+                else:
+                    print("place taken! Please choose another")
+            else:
+                print("Invalid index! Please select an index in the range: 0 to", BOARD_SIZE-1)
 
 
 def checkForWinner(game):
@@ -139,9 +146,9 @@ if __name__ == "__main__":
         win = checkForWinner(gameBoard)
         countLegalMoves += 1
 
-updateBoard(gameBoard)
+    updateBoard(gameBoard)
 
-if win != 0:
-    print("The winner is player number ", 1 if win == 'X' else 2)
-else:
-    print("Game over, no winner!")
+    if win != 0:
+        print("The winner is player number", 1 if win == 'X' else 2)
+    else:
+        print("Game over, no winner!")

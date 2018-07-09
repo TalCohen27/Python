@@ -12,3 +12,5 @@ with open('file_to_save.txt', 'w') as open_file:
     titles = soup.findAll("h2", {"class": "story-heading"})
     for title in titles:
         open_file.write(str(title.text).strip() + "\n")
+
+
